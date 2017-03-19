@@ -108,11 +108,14 @@ class Theme:
         for page in self.site.pages.values():
             if not page.FINDABLE: continue
             if re_path is not None and not re_path.match(page.src_relpath): continue
-            if sort is not None and sort not in page.meta: continue
+            if sort is not None and sort != "url" and sort not in page.meta: continue
             pages.append(page)
 
         if sort is not None:
-            pages.sort(key=lambda p: p.meta.get(sort, None), reverse=sort_reverse)
+            if sort == "url":
+                pages.sort(key=lambda p: p.dst_link, reverse=sort_reverse)
+            else:
+                pages.sort(key=lambda p: p.meta.get(sort, None), reverse=sort_reverse)
 
         if limit is not None:
             pages = pages[:limit]
